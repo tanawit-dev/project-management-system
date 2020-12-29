@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Edit task</title>
+</head>
+<body>
+	<h2>Edit task</h2>
+	<form th:action="@{/projects/{id}/tasks/{taskId}(id=${project.id}, taskId=${task.id})}" th:object="${task}" method="post">
+		<label for="name">Name</label>
+		<input type="text" th:field="*{name}" id="name" placeholder="Enter task name" />
+		<select th:field="*{assignedId}">
+		<option th:value="''" th:text="Select">Select employee</option>
+			<option th:each="employee: ${employees}" th:value="${employee.id}" th:text="${employee.fullName}" th:selected="${employee.id == task.assignedId}"></option>
+		</select>
+		<input type="hidden" th:field="*{id}" id="id"/>
+		<p th:if="${#fields.hasErrors('name')}" th:errors="*{name}" />
+		<input type="submit" value="Save task" />
+	</form>
+</body>
+</html>

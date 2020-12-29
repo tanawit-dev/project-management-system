@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title th:text="'Edit project - ' + ${project.name}"></title>
+</head>
+<body>
+	<h2 th:text="'Edit project - ' + ${project.name}"></h2>
+	<form th:action="@{/projects/{id}(id=${project.id})}" th:object="${project}" method="post">
+		<label for="name">Name</label>
+		<input type="text" th:field="*{name}" id="name" placeholder="Enter project name" />
+		<input type="hidden" th:field="*{id}" id="id"/>
+		<p th:if="${#fields.hasErrors('name')}" th:errors="*{name}" />
+		<input type="submit" value="Save" />
+	</form>
+	
+</body>
+</html>

@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Create task</title>
+</head>
+<body>
+	<h2>New task</h2>
+	<form th:action="@{/projects/{id}/tasks(id=${project.id})}" th:object="${task}" method="post">
+		<label for="name">Name</label>
+		<input type="text" th:field="*{name}" id="name" placeholder="Enter task name" />
+		<input type="hidden" th:field="*{id}" id="id"/>
+		<p th:if="${#fields.hasErrors('name')}" th:errors="*{name}" />
+		<input type="submit" value="Create task" />
+	</form>
+</body>
+</html>

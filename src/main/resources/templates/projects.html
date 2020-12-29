@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Project list</title>
+</head>
+<body>
+	<div th:replace="fragments/header :: header"></div>
+	<p>
+		<a sec:authorize="hasAnyAuthority('MANAGER')" th:href="@{/projects/new}">New project</a>
+	</p>
+	<table th:unless="${#lists.isEmpty(projects)}">
+		<thead>
+			<tr>
+				<th>Id</th>
+				<th>Name</th>
+				<th>#</th>
+				<th sec:authorize="hasAnyAuthority('MANAGER')">#</th>
+				<th sec:authorize="hasAnyAuthority('MANAGER')">#</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr th:each="project : ${projects}">
+				<td th:text="${project.id}"></td>
+				<td th:text="${project.name}"></td>
+				<td><a th:href="@{/projects/{id}(id=${project.id})}">Detail</a></td>
+				<td sec:authorize="hasAnyAuthority('MANAGER')"><a th:href="@{/projects/{id}/edit(id=${project.id})}">Edit</a></td>
+				<td sec:authorize="hasAnyAuthority('MANAGER')"><a th:href="@{/projects/{id}/delete(id=${project.id})}">Delete</a></td>
+			</tr>
+		</tbody>
+	</table>
+	
+</body>
+</html>

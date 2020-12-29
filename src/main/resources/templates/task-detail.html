@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title th:text="${task.name}"></title>
+</head>
+<body>
+	<h2 th:text="'Task - ' + ${task.name}"></h2>
+	<a th:href="@{/projects/{id}(id=${project.id})}" th:text="'Back to ' + ${project.name}"></a>
+</body>
+</html>

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title th:text="'Project - ' + ${project.name}"></title>
+</head>
+<body>
+	<h2 th:text="'Project - ' + ${project.name}"></h2>
+	<div>
+		<nobr>
+			<a th:href="@{/projects/{id}/tasks/new(id=${project.id})}">New task</a> | 
+			<a th:href="@{/projects}">Back</a>
+		</nobr>
+	</div>
+	<table th:unless="${#lists.isEmpty(project.tasks)}">
+		<thead>
+			<tr>
+				<th>Id</th>
+				<th>Name</th>
+				<th>#</th>
+				<th>#</th>
+				<th sec:authorize="hasAnyAuthority('MANAGER')">#</th>
+		</thead>
+		<tbody>
+			<tr th:each="task : ${project.tasks}">
+				<td th:text="${task.id}"></td>
+				<td th:text="${task.name}"></td>
+				<td>
+					<a th:href="@{/projects/{id}/tasks/{taskId}(id=${project.id}, taskId=${task.id})}">View</a>
+				</td>
+				<td>
+					<a th:href="@{/projects/{id}/tasks/{taskId}/edit(id=${project.id}, taskId=${task.id})}">Edit</a>
+				</td>
+				<td sec:authorize="hasAnyAuthority('MANAGER')">
+					<a th:href="@{/projects/{id}/tasks/{taskId}/delete(id=${project.id}, taskId=${task.id})}">Delete</a>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</body>
+</html>
