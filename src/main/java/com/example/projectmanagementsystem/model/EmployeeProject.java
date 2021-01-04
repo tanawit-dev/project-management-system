@@ -16,6 +16,7 @@ import lombok.Data;
 @Data
 @Entity
 public class EmployeeProject {
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;

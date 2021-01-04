@@ -18,22 +18,29 @@ import lombok.Data;
 @Data
 @Entity
 public class Employee {
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
+
 	@Column(nullable = false)
 	private String firstName;
+
 	@Column(nullable = false)
 	private String lastName;
+
 	@Column(nullable = false)
 	@Enumerated(EnumType.STRING)
 	private EmployeeRole role;
+
 	@Column(unique = true)
 	private String username;
+
 	private String password;
 
 	@OneToMany(mappedBy = "employee")
 	private Set<Task> tasks;
+
 	@OneToMany(mappedBy = "employee")
 	private Set<EmployeeProject> employeeProjects;
 }

@@ -9,7 +9,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.PrePersist;
+
+import org.hibernate.annotations.CreationTimestamp;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -17,17 +18,24 @@ import lombok.EqualsAndHashCode;
 @Data
 @Entity
 public class Task {
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
+
 	@Column(nullable = false)
 	private String name;
+
 	@Column
 	private LocalDateTime beginAt;
+
 	@Column
 	private LocalDateTime finishAt;
+
 	@Column(updatable = false)
+	@CreationTimestamp
 	private LocalDateTime createAt;
+
 	@Column
 	private String detail;
 
@@ -35,14 +43,9 @@ public class Task {
 	@ManyToOne
 	@JoinColumn(name = "project_id")
 	private Project project;
-	
+
 	@EqualsAndHashCode.Exclude
 	@ManyToOne
 	@JoinColumn(name = "employee_id")
 	private Employee employee;
-
-	@PrePersist
-	public void prePersist() {
-		createAt = LocalDateTime.now();
-	}
 }

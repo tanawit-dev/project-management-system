@@ -14,14 +14,17 @@ import lombok.Data;
 @Data
 @Entity
 public class Project {
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
+
 	@Column(nullable = false)
 	private String name;
 
 	@OneToMany(mappedBy = "project")
 	private Set<Task> tasks;
+
 	@OneToMany(mappedBy = "project")
 	private Set<EmployeeProject> employeeProjects;
 }
