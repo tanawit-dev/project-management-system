@@ -35,6 +35,7 @@ public class ProjectServiceImplTest {
 		project2.setName("project2");
 		Project project3 = new Project();
 		project3.setName("project3");
+		projects = new ArrayList<>();
 		projects.add(project1);
 		projects.add(project2);
 		projects.add(project3);

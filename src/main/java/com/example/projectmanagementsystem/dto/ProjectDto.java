@@ -8,9 +8,11 @@ import lombok.Data;
 
 @Data
 public class ProjectDto {
+
 	private Long id;
+
 	@NotBlank
 	private String name;
+
 	private Set<TaskDto> tasks;
-	private Set<EmployeeProjectDto> employeeProjects;
 }

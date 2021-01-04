@@ -9,7 +9,7 @@ import com.example.projectmanagementsystem.model.Project;
 
 public interface ProjectRepository extends CrudRepository<Project, Long> {
 	List<Project> findAll();
-	
-	@Query("SELECT p FROM Project p JOIN p.employeeProjects ep WHERE ep.id.employeeId = ?1")
+
+	@Query("SELECT p FROM Project p JOIN p.employeeProjects ep WHERE ep.employee.id = ?1")
 	List<Project> findByEmployeeId(Long employeeId);
 }

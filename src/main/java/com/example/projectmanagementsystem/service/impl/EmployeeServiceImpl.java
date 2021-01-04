@@ -42,7 +42,7 @@ public class EmployeeServiceImpl implements IEmployeeService {
 
 	@Override
 	public Employee update(Long id, Employee employee) {
-		if (employeeRepository.findById(id).isEmpty()) {
+		if (!employeeRepository.findById(id).isPresent()) {
 			throw new EntityNotFoundException();
 		}
 		return employeeRepository.save(employee);

@@ -8,7 +8,6 @@ import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
-import org.modelmapper.ModelMapper;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Controller;
@@ -24,6 +23,9 @@ import com.example.projectmanagementsystem.dto.EmployeeDto;
 import com.example.projectmanagementsystem.dto.ProjectDto;
 import com.example.projectmanagementsystem.dto.TaskDto;
 import com.example.projectmanagementsystem.exception.NotFoundExcetion;
+import com.example.projectmanagementsystem.mapper.EmployeeMapper;
+import com.example.projectmanagementsystem.mapper.ProjectMapper;
+import com.example.projectmanagementsystem.mapper.TaskMapper;
 import com.example.projectmanagementsystem.model.Employee;
 import com.example.projectmanagementsystem.model.Project;
 import com.example.projectmanagementsystem.model.Task;
@@ -38,17 +40,22 @@ public class ProjectController {
 
 	private IProjectService projectService;
 	private ITaskService taskService;
-	private ModelMapper modelMapper;
 	private UserDetailsService userDetailsService;
 	private IEmployeeService employeeService;
+	private ProjectMapper projectMapper;
+	private TaskMapper taskMapper;
+	private EmployeeMapper employeeMapper;
 
-	public ProjectController(IProjectService projectService, ModelMapper modelMapper, ITaskService taskService,
-			UserDetailsService userDetailsService, IEmployeeService employeeService) {
+	public ProjectController(IProjectService projectService, ITaskService taskService,
+			UserDetailsService userDetailsService, IEmployeeService employeeService, ProjectMapper projectMapper,
+			TaskMapper taskMapper, EmployeeMapper employeeMapper) {
 		this.projectService = projectService;
-		this.modelMapper = modelMapper;
 		this.taskService = taskService;
 		this.userDetailsService = userDetailsService;
 		this.employeeService = employeeService;
+		this.projectMapper = projectMapper;
+		this.taskMapper = taskMapper;
+		this.employeeMapper = employeeMapper;
 	}
 
 	@GetMapping
@@ -65,7 +72,7 @@ public class ProjectController {
 			projects = projectService.findByEmployeeId(employee.getId());
 		}
 		List<ProjectDto> projectDtos = new ArrayList<>();
-		projects.forEach(p -> projectDtos.add(convertToDto(p)));
+		projects.forEach(p -> projectDtos.add(projectMapper.toDto(p)));
 		model.addAttribute("projects", projectDtos);
 		return "projects";
 	}
@@ -79,14 +86,14 @@ public class ProjectController {
 	@GetMapping("/{id}/edit")
 	public String editProject(Model model, @PathVariable Long id) {
 		Project project = projectService.findById(id).orElseThrow(NotFoundExcetion::new);
-		model.addAttribute("project", convertToDto(project));
+		model.addAttribute("project", projectMapper.toDto(project));
 		return "edit-project";
 	}
 
 	@GetMapping("/{id}")
 	public String getProject(@PathVariable Long id, Model model) {
 		Project project = projectService.findById(id).orElseThrow(NotFoundExcetion::new);
-		model.addAttribute("project", convertToDto(project));
+		model.addAttribute("project", projectMapper.toDto(project));
 		return "project";
 	}
 
@@ -96,7 +103,7 @@ public class ProjectController {
 			return "new-project";
 		}
 
-		projectService.create(convertToEntity(projectDto));
+		projectService.create(projectMapper.toEntity(projectDto));
 		return "redirect:/projects";
 	}
 
@@ -107,7 +114,7 @@ public class ProjectController {
 			return "project";
 		}
 
-		projectService.update(id, convertToEntity(projectDto));
+		projectService.update(id, projectMapper.toEntity(projectDto));
 		return "redirect:/projects";
 	}
 
@@ -122,8 +129,8 @@ public class ProjectController {
 		Task task = taskService.findById(taskId).orElseThrow(NotFoundExcetion::new);
 		Project project = projectService.findById(projectId).orElseThrow(NotFoundExcetion::new);
 
-		model.addAttribute("task", convertToDto(task));
-		model.addAttribute("project", convertToDto(project));
+		model.addAttribute("task", taskMapper.toDto(task));
+		model.addAttribute("project", projectMapper.toDto(project));
 		return "task-detail";
 	}
 
@@ -132,7 +139,7 @@ public class ProjectController {
 		Project project = projectService.findById(projectId).orElseThrow(NotFoundExcetion::new);
 
 		model.addAttribute("task", new TaskDto());
-		model.addAttribute("project", convertToDto(project));
+		model.addAttribute("project", projectMapper.toDto(project));
 		return "new-task";
 	}
 
@@ -140,10 +147,11 @@ public class ProjectController {
 	public String editTask(Model model, @PathVariable Long taskId, @PathVariable("id") Long projectId) {
 		Project project = projectService.findById(projectId).orElseThrow(NotFoundExcetion::new);
 		Task task = taskService.findById(taskId).orElseThrow(NotFoundExcetion::new);
-		Set<EmployeeDto> employeeDtos = employeeService.findAll().stream().map(this::convertToDto)
-				.collect(Collectors.toSet());
-		model.addAttribute("task", convertToDto(task));
-		model.addAttribute("project", convertToDto(project));
+
+		Set<EmployeeDto> employeeDtos = employeeMapper
+				.toDto(employeeService.findAll().stream().collect(Collectors.toSet()));
+		model.addAttribute("task", taskMapper.toDto(task));
+		model.addAttribute("project", projectMapper.toDto(project));
 		model.addAttribute("employees", employeeDtos);
 		return "edit-task";
 	}
@@ -156,7 +164,7 @@ public class ProjectController {
 		}
 
 		Project project = projectService.findById(id).orElseThrow(NotFoundExcetion::new);
-		Task task = convertToEntity(taskDto);
+		Task task = taskMapper.toEntity(taskDto);
 		task.setProject(project);
 		taskService.create(task);
 
@@ -180,8 +188,9 @@ public class ProjectController {
 		}
 
 		Project project = projectService.findById(id).orElseThrow(NotFoundExcetion::new);
-		Employee assignedEmployee = employeeService.findById(taskDto.getAssignedId()).orElseThrow(NotFoundExcetion::new);
-		Task task = convertToEntity(taskDto);
+		Employee assignedEmployee = employeeService.findById(taskDto.getAssignedId())
+				.orElseThrow(NotFoundExcetion::new);
+		Task task = taskMapper.toEntity(taskDto);
 		task.setProject(project);
 		task.setEmployee(assignedEmployee);
 		taskService.update(taskId, task);
@@ -196,62 +205,16 @@ public class ProjectController {
 	 */
 	@GetMapping("/{id}/tasks/{taskId}/delete")
 	public String deleteTask(@PathVariable Long taskId, @PathVariable Long id) {
-//		Task task = taskService.findById(taskId).orElse(null);
-//		if (task == null) {
-//			return "not-found";
-//		}
-//		
-//		TaskDto taskDto = convertToDto(task);
-//		if (taskDto.isCompleted()) {
-//			throw new 
-//		}
+		// Task task = taskService.findById(taskId).orElse(null);
+		// if (task == null) {
+		// return "not-found";
+		// }
+		//
+		// TaskDto taskDto = convertToDto(task);
+		// if (taskDto.isCompleted()) {
+		// throw new
+		// }
 		taskService.delete(taskId);
 		return "redirect:/projects/" + id;
 	}
-
-	private ProjectDto convertToDto(Project project) {
-		ProjectDto projectDto = modelMapper.map(project, ProjectDto.class);
-		if (project.getTasks() != null) {
-			projectDto.setTasks(project.getTasks().stream().map(p -> convertToDto(p)).collect(Collectors.toSet()));
-		}
-//		ProjectDto projectDto = new ProjectDto();
-//		projectDto.setId(project.getId());
-//		projectDto.setName(project.getName());
-//		if (project.getTasks() != null) {
-//			projectDto.setTasks(project.getTasks().stream().map(this::convertToDto).collect(Collectors.toSet()));
-//		}
-		return projectDto;
-	}
-
-	private Project convertToEntity(ProjectDto projectDto) {
-		Project project = modelMapper.map(projectDto, Project.class);
-		if (projectDto.getTasks() != null) {
-			project.setTasks(projectDto.getTasks().stream().map(p -> convertToEntity(p)).collect(Collectors.toSet()));
-		}
-		return project;
-	}
-
-	private TaskDto convertToDto(Task task) {
-		TaskDto taskDto = modelMapper.map(task, TaskDto.class);
-		if (task.getEmployee() != null) {
-			taskDto.setAssignedId(task.getEmployee().getId());
-		}
-		return taskDto;
-	}
-
-	private Task convertToEntity(TaskDto taskDto) {
-		Task task = modelMapper.map(taskDto, Task.class);
-		return task;
-	}
-
-	private EmployeeDto convertToDto(Employee employee) {
-		EmployeeDto employeeDto = modelMapper.map(employee, EmployeeDto.class);
-		return employeeDto;
-	}
-
-	private Employee convertToEntity(Employee employeeDto) {
-		Employee employee = modelMapper.map(employeeDto, Employee.class);
-		return employee;
-	}
-
 }
