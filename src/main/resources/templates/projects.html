@@ -1,34 +1,52 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-<meta charset="UTF-8">
-<title>Project list</title>
-</head>
-<body>
-	<div th:replace="fragments/header :: header"></div>
-	<p>
-		<a sec:authorize="hasAnyAuthority('MANAGER')" th:href="@{/projects/new}">New project</a>
-	</p>
-	<table th:unless="${#lists.isEmpty(projects)}">
-		<thead>
-			<tr>
-				<th>Id</th>
-				<th>Name</th>
-				<th>#</th>
-				<th sec:authorize="hasAnyAuthority('MANAGER')">#</th>
-				<th sec:authorize="hasAnyAuthority('MANAGER')">#</th>
-			</tr>
-		</thead>
-		<tbody>
-			<tr th:each="project : ${projects}">
-				<td th:text="${project.id}"></td>
-				<td th:text="${project.name}"></td>
-				<td><a th:href="@{/projects/{id}(id=${project.id})}">Detail</a></td>
-				<td sec:authorize="hasAnyAuthority('MANAGER')"><a th:href="@{/projects/{id}/edit(id=${project.id})}">Edit</a></td>
-				<td sec:authorize="hasAnyAuthority('MANAGER')"><a th:href="@{/projects/{id}/delete(id=${project.id})}">Delete</a></td>
-			</tr>
-		</tbody>
-	</table>
-	
-</body>
+	<head>
+		<meta charset="UTF-8" />
+		<title>Project list</title>
+		<link
+			href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css"
+			rel="stylesheet"
+			integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1"
+			crossorigin="anonymous"
+		/>
+		<script
+			src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js"
+			integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW"
+			crossorigin="anonymous"
+		></script>
+	</head>
+	<body>
+		<div th:replace="fragments/header :: header"></div>
+		<div class="container">
+			<div class="mb-2">
+				<a sec:authorize="hasAnyAuthority('MANAGER')" th:href="@{/projects/new}" class="btn btn-primary">New project</a>
+			</div>
+			<table th:unless="${#lists.isEmpty(projects)}" class="table table-striped">
+				<thead>
+					<tr>
+						<th>Id</th>
+						<th class="w-50">Name</th>
+						<th></th>
+						<th sec:authorize="hasAnyAuthority('MANAGER')"></th>
+						<th sec:authorize="hasAnyAuthority('MANAGER')"></th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:each="project : ${projects}">
+						<td th:text="${project.id}"></td>
+						<td th:text="${project.name}"></td>
+						<td>
+							<a th:href="@{/projects/{id}(id=${project.id})}" class="btn btn-secondary">Detail</a>
+						</td>
+						<td sec:authorize="hasAnyAuthority('MANAGER')">
+							<a th:href="@{/projects/{id}/edit(id=${project.id})}" class="btn btn-warning">Edit</a>
+						</td>
+						<td sec:authorize="hasAnyAuthority('MANAGER')">
+							<a th:href="@{/projects/{id}/delete(id=${project.id})}" class="btn btn-danger">Delete</a>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</body>
 </html>
