@@ -27,7 +27,7 @@
 				</div>
 				<div class="mb-3">
 					<select th:field="*{assignedId}" class="form-select">
-						<option th:value="''" th:text="Select">Select employee</option>
+						<option th:value="null" th:text="Select">Select employee</option>
 						<option
 							th:each="employee: ${employees}"
 							th:value="${employee.id}"

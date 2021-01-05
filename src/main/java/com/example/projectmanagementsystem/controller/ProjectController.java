@@ -166,6 +166,7 @@ public class ProjectController {
 		Project project = projectService.findById(id).orElseThrow(NotFoundExcetion::new);
 		Task task = taskMapper.toEntity(taskDto);
 		task.setProject(project);
+		task.setEmployee(null);
 		taskService.create(task);
 
 		return "redirect:/projects/" + id;
@@ -188,11 +189,15 @@ public class ProjectController {
 		}
 
 		Project project = projectService.findById(id).orElseThrow(NotFoundExcetion::new);
-		Employee assignedEmployee = employeeService.findById(taskDto.getAssignedId())
-				.orElseThrow(NotFoundExcetion::new);
 		Task task = taskMapper.toEntity(taskDto);
 		task.setProject(project);
-		task.setEmployee(assignedEmployee);
+		if (taskDto.getAssignedId() == null) {
+			task.setEmployee(null);
+		} else {
+			Employee assignedEmployee = employeeService.findById(taskDto.getAssignedId())
+					.orElseThrow(NotFoundExcetion::new);
+			task.setEmployee(assignedEmployee);
+		}
 		taskService.update(taskId, task);
 		return "redirect:/projects/" + id;
 	}
