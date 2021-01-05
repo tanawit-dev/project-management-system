@@ -5,18 +5,17 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import lombok.RequiredArgsConstructor;
+
 import com.example.projectmanagementsystem.model.Project;
 import com.example.projectmanagementsystem.repository.ProjectRepository;
 import com.example.projectmanagementsystem.service.IProjectService;
 
 @Service
+@RequiredArgsConstructor
 public class ProjectServiceImpl implements IProjectService {
 
-	private ProjectRepository projectRepository;
-
-	public ProjectServiceImpl(ProjectRepository projectRepository) {
-		this.projectRepository = projectRepository;
-	}
+	private final ProjectRepository projectRepository;
 
 	@Override
 	public List<Project> findAll() {

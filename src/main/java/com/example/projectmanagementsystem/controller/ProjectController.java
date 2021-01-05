@@ -11,6 +11,7 @@ import javax.validation.Valid;
 import com.example.projectmanagementsystem.dto.EmployeeDto;
 import com.example.projectmanagementsystem.dto.ProjectDto;
 import com.example.projectmanagementsystem.dto.TaskDto;
+import com.example.projectmanagementsystem.enumeration.EmployeeRole;
 import com.example.projectmanagementsystem.exception.NotFoundExcetion;
 import com.example.projectmanagementsystem.mapper.EmployeeMapper;
 import com.example.projectmanagementsystem.mapper.ProjectMapper;
@@ -21,7 +22,6 @@ import com.example.projectmanagementsystem.model.Task;
 import com.example.projectmanagementsystem.service.IEmployeeService;
 import com.example.projectmanagementsystem.service.IProjectService;
 import com.example.projectmanagementsystem.service.ITaskService;
-import com.example.projectmanagementsystem.type.EmployeeRole;
 
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -34,29 +34,20 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import lombok.RequiredArgsConstructor;
+
 @Controller
 @RequestMapping("/projects")
+@RequiredArgsConstructor
 public class ProjectController {
 
-	private IProjectService projectService;
-	private ITaskService taskService;
-	private UserDetailsService userDetailsService;
-	private IEmployeeService employeeService;
-	private ProjectMapper projectMapper;
-	private TaskMapper taskMapper;
-	private EmployeeMapper employeeMapper;
-
-	public ProjectController(IProjectService projectService, ITaskService taskService,
-			UserDetailsService userDetailsService, IEmployeeService employeeService, ProjectMapper projectMapper,
-			TaskMapper taskMapper, EmployeeMapper employeeMapper) {
-		this.projectService = projectService;
-		this.taskService = taskService;
-		this.userDetailsService = userDetailsService;
-		this.employeeService = employeeService;
-		this.projectMapper = projectMapper;
-		this.taskMapper = taskMapper;
-		this.employeeMapper = employeeMapper;
-	}
+	private final IProjectService projectService;
+	private final ITaskService taskService;
+	private final UserDetailsService userDetailsService;
+	private final IEmployeeService employeeService;
+	private final ProjectMapper projectMapper;
+	private final TaskMapper taskMapper;
+	private final EmployeeMapper employeeMapper;
 
 	@GetMapping
 	public String getProjects(Model model, Principal principal) {

@@ -1,12 +1,9 @@
 package com.example.projectmanagementsystem.repository;
 
-import java.util.List;
-
-import org.springframework.data.repository.CrudRepository;
-
 import com.example.projectmanagementsystem.model.Employee;
 
-public interface EmployeeRepository extends CrudRepository<Employee, Long> {
-	List<Employee> findAll();
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface EmployeeRepository extends JpaRepository<Employee, Long> {
 	Employee findByUsername(String username);
 }

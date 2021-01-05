@@ -7,18 +7,17 @@ import javax.persistence.EntityNotFoundException;
 
 import org.springframework.stereotype.Service;
 
+import lombok.RequiredArgsConstructor;
+
 import com.example.projectmanagementsystem.model.Employee;
 import com.example.projectmanagementsystem.repository.EmployeeRepository;
 import com.example.projectmanagementsystem.service.IEmployeeService;
 
 @Service
+@RequiredArgsConstructor
 public class EmployeeServiceImpl implements IEmployeeService {
 
-	private EmployeeRepository employeeRepository;
-
-	public EmployeeServiceImpl(EmployeeRepository employeeRepository) {
-		this.employeeRepository = employeeRepository;
-	}
+	private final EmployeeRepository employeeRepository;
 
 	@Override
 	public List<Employee> findAll() {
@@ -29,7 +28,7 @@ public class EmployeeServiceImpl implements IEmployeeService {
 	public Optional<Employee> findById(Long id) {
 		return employeeRepository.findById(id);
 	}
-	
+
 	@Override
 	public Employee findByUsername(String username) {
 		return employeeRepository.findByUsername(username);

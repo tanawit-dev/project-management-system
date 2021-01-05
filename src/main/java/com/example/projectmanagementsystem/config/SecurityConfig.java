@@ -1,5 +1,7 @@
 package com.example.projectmanagementsystem.config;
 
+import com.example.projectmanagementsystem.enumeration.EmployeeRole;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -12,17 +14,14 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
-import com.example.projectmanagementsystem.type.EmployeeRole;
+import lombok.RequiredArgsConstructor;
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-	private UserDetailsService userDetailsService;
-
-	public SecurityConfig(UserDetailsService userDetailsService) {
-		this.userDetailsService = userDetailsService;
-	}
+	private final UserDetailsService userDetailsService;
 
 	@Bean
 	public AuthenticationProvider authenticationProvider() {
@@ -34,25 +33,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests()
-        .antMatchers("/h2-console", "/h2-console/**").permitAll()
-        .and()
-        .headers().frameOptions().sameOrigin();
-		
-		http
-		.csrf().disable()
-		.authorizeRequests()
-		.antMatchers("/login", "/h2-console/**").permitAll()
-		.antMatchers(HttpMethod.POST, "/projects/**").hasAuthority(EmployeeRole.MANAGER.name())
-		.antMatchers(HttpMethod.GET, "/projects/*/edit","/projects/**/delete").hasAuthority(EmployeeRole.MANAGER.name())
-		.anyRequest()
-		.authenticated()
-		.and()
-		.formLogin()
-		.and()
-		.logout().invalidateHttpSession(true)
-		.clearAuthentication(true)
-		.logoutRequestMatcher(new AntPathRequestMatcher("/logout"));
+		http.authorizeRequests().antMatchers("/h2-console", "/h2-console/**").permitAll().and().headers().frameOptions()
+				.sameOrigin();
+
+		http.csrf().disable().authorizeRequests().antMatchers("/login", "/h2-console/**").permitAll()
+				.antMatchers(HttpMethod.POST, "/projects/**").hasAuthority(EmployeeRole.MANAGER.name())
+				.antMatchers(HttpMethod.GET, "/projects/*/edit", "/projects/**/delete")
+				.hasAuthority(EmployeeRole.MANAGER.name()).anyRequest().authenticated().and().formLogin().and().logout()
+				.invalidateHttpSession(true).clearAuthentication(true)
+				.logoutRequestMatcher(new AntPathRequestMatcher("/logout"));
 	}
 
 }

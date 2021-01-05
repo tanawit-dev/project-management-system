@@ -2,14 +2,12 @@ package com.example.projectmanagementsystem.repository;
 
 import java.util.List;
 
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.CrudRepository;
-
 import com.example.projectmanagementsystem.model.Project;
 
-public interface ProjectRepository extends CrudRepository<Project, Long> {
-	List<Project> findAll();
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
+public interface ProjectRepository extends JpaRepository<Project, Long> {
 	@Query("SELECT p FROM Project p JOIN p.employeeProjects ep WHERE ep.employee.id = ?1")
 	List<Project> findByEmployeeId(Long employeeId);
 }

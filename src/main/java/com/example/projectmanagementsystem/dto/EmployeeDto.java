@@ -3,7 +3,7 @@ package com.example.projectmanagementsystem.dto;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
-import com.example.projectmanagementsystem.type.EmployeeRole;
+import com.example.projectmanagementsystem.enumeration.EmployeeRole;
 
 import lombok.AccessLevel;
 import lombok.Data;

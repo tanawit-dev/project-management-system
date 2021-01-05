@@ -9,7 +9,7 @@ public interface IProjectService {
 	List<Project> findAll();
 
 	Optional<Project> findById(Long id);
-	
+
 	List<Project> findByEmployeeId(Long employeeId);
 
 	Project create(Project project);

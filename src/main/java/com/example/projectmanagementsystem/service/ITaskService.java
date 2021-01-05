@@ -1,11 +1,12 @@
 package com.example.projectmanagementsystem.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import com.example.projectmanagementsystem.model.Task;
 
 public interface ITaskService {
-	Iterable<Task> findAll();
+	List<Task> findAll();
 
 	Optional<Task> findById(Long id);
 
