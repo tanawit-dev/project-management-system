@@ -20,32 +20,30 @@
 		<div class="container">
 			<h2 th:text="'Project - ' + ${project.name}"></h2>
 			<div class="row">
-				<div class="col-1">
+				<div class="col-6">
 					<a th:href="@{/projects}" class="btn btn-secondary">Back</a>
-				</div>
-				<div class="col-1">
-					<a th:href="@{/projects/{id}/tasks/new(id=${project.id})}" class="btn btn-primary">New task</a>
+					<a sec:authorize="hasAnyAuthority('MANAGER')" th:href="@{/projects/{id}/tasks/new(id=${project.id})}" class="btn btn-primary">New task</a>
 				</div>
 			</div>
-			<table th:unless="${#lists.isEmpty(project.tasks)}" class="table table-striped">
+			<table th:unless="${#lists.isEmpty(project.tasks)}" class="table table-striped text-center">
 				<thead>
 					<tr>
 						<th>Id</th>
-						<th class="w-50">Name</th>
-						<th>#</th>
-						<th>#</th>
-						<th sec:authorize="hasAnyAuthority('MANAGER')">#</th>
+						<th class="w-75">Name</th>
+						<th></th>
+						<th sec:authorize="hasAnyAuthority('MANAGER')"></th>
+						<th sec:authorize="hasAnyAuthority('MANAGER')"></th>
 					</tr>
 				</thead>
 
 				<tbody>
 					<tr th:each="task : ${project.tasks}">
 						<td th:text="${task.id}"></td>
-						<td th:text="${task.name}"></td>
+						<td th:text="${task.name}" class="text-start"></td>
 						<td>
 							<a th:href="@{/projects/{id}/tasks/{taskId}(id=${project.id}, taskId=${task.id})}" class="btn btn-secondary">Detail</a>
 						</td>
-						<td>
+						<td sec:authorize="hasAnyAuthority('MANAGER')">
 							<a th:href="@{/projects/{id}/tasks/{taskId}/edit(id=${project.id}, taskId=${task.id})}" class="btn btn-warning">Edit</a>
 						</td>
 						<td sec:authorize="hasAnyAuthority('MANAGER')">

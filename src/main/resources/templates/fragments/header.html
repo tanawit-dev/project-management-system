@@ -19,7 +19,7 @@
 		<div th:fragment="header" class="mb-2">
 			<nav class="navbar navbar-dark bg-dark">
 				<div class="container-fluid">
-					<a class="navbar-brand">Header</a>
+					<span class="navbar-brand">Logged in as <span sec:authentication="name" class="text-uppercase"></span></span>
 					<form class="d-flex">
 						<a class="btn btn-light" role="button" th:href="@{/logout}">Logout</a>
 					</form>

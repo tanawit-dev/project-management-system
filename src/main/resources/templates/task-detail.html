@@ -20,6 +20,16 @@
 		<div class="container">
 			<h2 th:text="'Task - ' + ${task.name}"></h2>
 			<a th:href="@{/projects/{id}(id=${project.id})}" th:text="'Back to ' + ${project.name} " class="btn btn-secondary"></a>
+			<form th:action="@{/projects/{id}/tasks/{taskId}(id=${task.projectId}, taskId=${task.id})}" th:object="${task}" method="post" class="mt-2">
+				<div class="mb-3">
+					<label for="beginDate">Begin date:</label>
+					<input id="beginDate" type="datetime-local" class="form-control" placeholder="Begin date" />
+				</div>
+				<div class="mb-3">
+					<label for="finish">Finish date:</label>
+					<input id="finish" type="datetime-local" class="form-control" placeholder="Finish date" />
+				</div>
+			</form>
 		</div>
 	</body>
 </html>

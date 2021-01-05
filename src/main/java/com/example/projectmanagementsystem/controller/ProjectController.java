@@ -163,15 +163,6 @@ public class ProjectController {
 		return "redirect:/projects/" + id;
 	}
 
-	/**
-	 * FIXME: เรื่อง คำนวนเวลาทำงาน
-	 * 
-	 * @param task
-	 * @param bindingResult
-	 * @param taskId
-	 * @param id
-	 * @return
-	 */
 	@PostMapping("/{id}/tasks/{taskId}")
 	public String updateTask(@Valid @ModelAttribute("task") TaskDto taskDto, BindingResult bindingResult,
 			@PathVariable Long taskId, @PathVariable Long id) {
@@ -192,6 +183,18 @@ public class ProjectController {
 		taskService.update(taskId, task);
 		return "redirect:/projects/" + id;
 	}
+
+	/**
+	 * FIXME: เรื่อง คำนวนเวลาทำงาน
+	 * 
+	 * @param task
+	 * @param bindingResult
+	 * @param taskId
+	 * @param id
+	 * @return
+	 */
+	// @PostMapping("/{id}/tasks/{taskId}/log-work")
+	// public String logWork(@ModelAttribute("task") TaskDto taskDto)
 
 	/**
 	 * FIXME: เรื่องห้ามลบ task ที่ complete แล้ว
