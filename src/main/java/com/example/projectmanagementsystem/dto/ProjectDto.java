@@ -4,7 +4,9 @@ import java.util.Set;
 
 import javax.validation.constraints.NotBlank;
 
+import lombok.AccessLevel;
 import lombok.Data;
+import lombok.Getter;
 
 @Data
 public class ProjectDto {
@@ -15,4 +17,13 @@ public class ProjectDto {
 	private String name;
 
 	private Set<TaskDto> tasks;
+
+	@Getter(AccessLevel.NONE)
+	private long progress;
+
+	public long getProgress() {
+		long count = tasks.stream().filter(t -> t.isCompleted()).count();
+		return (count * 100) / tasks.size();
+	}
+
 }

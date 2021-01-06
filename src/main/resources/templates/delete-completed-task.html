@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 	<head>
 		<meta charset="UTF-8" />
-		<title>Not found</title>
+		<title>Delete complete task</title>
 		<link
 			href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css"
 			rel="stylesheet"
@@ -19,8 +19,8 @@
 		<div class="container">
 			<div class="row">
 				<div class="col-md-12 p-3 text-center">
-					<h2>404 Not Found</h2>
-					<div th:text="'Sorry, an error has occured, Requested page not found! ' + ${url}" class="mt-2"></div>
+					<h2>Error</h2>
+					<h4 th:text="${msg}"></h4>
 					<div class="mt-2">
 						<a th:href="@{/projects}" class="btn btn-primary btn-lg">Back to all project page</a>
 					</div>

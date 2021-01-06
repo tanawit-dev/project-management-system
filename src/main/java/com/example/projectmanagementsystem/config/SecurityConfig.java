@@ -37,6 +37,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.sameOrigin();
 
 		http.csrf().disable().authorizeRequests().antMatchers("/login", "/h2-console/**").permitAll()
+				.antMatchers(HttpMethod.POST, "/projects/**/log-work").hasAnyAuthority(EmployeeRole.MANAGER.name(), EmployeeRole.STAFF.name())
 				.antMatchers(HttpMethod.POST, "/projects/**").hasAuthority(EmployeeRole.MANAGER.name())
 				.antMatchers(HttpMethod.GET, "/projects/*/edit", "/projects/**/delete")
 				.hasAuthority(EmployeeRole.MANAGER.name()).anyRequest().authenticated().and().formLogin().and().logout()

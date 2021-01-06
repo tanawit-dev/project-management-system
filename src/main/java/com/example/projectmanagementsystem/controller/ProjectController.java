@@ -12,6 +12,7 @@ import com.example.projectmanagementsystem.dto.EmployeeDto;
 import com.example.projectmanagementsystem.dto.ProjectDto;
 import com.example.projectmanagementsystem.dto.TaskDto;
 import com.example.projectmanagementsystem.enumeration.EmployeeRole;
+import com.example.projectmanagementsystem.exception.DeleteTaskCompletedException;
 import com.example.projectmanagementsystem.exception.NotFoundExcetion;
 import com.example.projectmanagementsystem.mapper.EmployeeMapper;
 import com.example.projectmanagementsystem.mapper.ProjectMapper;
@@ -116,12 +117,10 @@ public class ProjectController {
 	}
 
 	@GetMapping("/{id}/tasks/{taskId}")
-	public String getTask(@PathVariable Long taskId, Model model, @PathVariable("id") Long projectId) {
+	public String getTask(@PathVariable Long taskId, Model model) {
 		Task task = taskService.findById(taskId).orElseThrow(NotFoundExcetion::new);
-		Project project = projectService.findById(projectId).orElseThrow(NotFoundExcetion::new);
 
 		model.addAttribute("task", taskMapper.toDto(task));
-		model.addAttribute("project", projectMapper.toDto(project));
 		return "task-detail";
 	}
 
@@ -184,35 +183,24 @@ public class ProjectController {
 		return "redirect:/projects/" + id;
 	}
 
-	/**
-	 * FIXME: เรื่อง คำนวนเวลาทำงาน
-	 * 
-	 * @param task
-	 * @param bindingResult
-	 * @param taskId
-	 * @param id
-	 * @return
-	 */
-	// @PostMapping("/{id}/tasks/{taskId}/log-work")
-	// public String logWork(@ModelAttribute("task") TaskDto taskDto)
+	@PostMapping("/{id}/tasks/{taskId}/log-work")
+	public String logWork(@Valid @ModelAttribute("task") TaskDto taskDto, BindingResult bindingResult,
+			@PathVariable Long id) {
+		if (bindingResult.hasErrors()) {
+			return "task-detail";
+		}
 
-	/**
-	 * FIXME: เรื่องห้ามลบ task ที่ complete แล้ว
-	 * 
-	 * @param taskId
-	 * @return
-	 */
+		taskService.logWork(id, taskMapper.toEntity(taskDto));
+		return "redirect:/projects/" + id + "/tasks/" + taskDto.getId();
+	}
+
 	@GetMapping("/{id}/tasks/{taskId}/delete")
 	public String deleteTask(@PathVariable Long taskId, @PathVariable Long id) {
-		// Task task = taskService.findById(taskId).orElse(null);
-		// if (task == null) {
-		// return "not-found";
-		// }
-		//
-		// TaskDto taskDto = convertToDto(task);
-		// if (taskDto.isCompleted()) {
-		// throw new
-		// }
+		Task retrivedTask = taskService.findById(taskId).orElseThrow(NotFoundExcetion::new);
+		TaskDto taskDto = taskMapper.toDto(retrivedTask);
+		if (taskDto.isCompleted()) {
+			throw new DeleteTaskCompletedException(taskDto);
+		}
 		taskService.delete(taskId);
 		return "redirect:/projects/" + id;
 	}

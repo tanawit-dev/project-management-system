@@ -18,7 +18,7 @@
 	<body>
 		<div th:replace="fragments/header :: header"></div>
 		<div class="container">
-			<h2 th:text="'Project - ' + ${project.name}"></h2>
+			<h2 th:text="'Project - ' + ${project.name} + ' (' + ${project.progress} + ' %)'"></h2>
 			<div class="row">
 				<div class="col-6">
 					<a th:href="@{/projects}" class="btn btn-secondary">Back</a>
@@ -37,11 +37,11 @@
 				</thead>
 
 				<tbody>
-					<tr th:each="task : ${project.tasks}">
+					<tr th:each="task : ${project.tasks}" th:class="${task.isCompleted ? 'table-success' : ''}">
 						<td th:text="${task.id}"></td>
 						<td th:text="${task.name}" class="text-start"></td>
 						<td>
-							<a th:href="@{/projects/{id}/tasks/{taskId}(id=${project.id}, taskId=${task.id})}" class="btn btn-secondary">Detail</a>
+							<a th:href="@{/projects/{id}/tasks/{taskId}(id=${project.id}, taskId=${task.id})}" class="btn btn-secondary">Log work</a>
 						</td>
 						<td sec:authorize="hasAnyAuthority('MANAGER')">
 							<a th:href="@{/projects/{id}/tasks/{taskId}/edit(id=${project.id}, taskId=${task.id})}" class="btn btn-warning">Edit</a>

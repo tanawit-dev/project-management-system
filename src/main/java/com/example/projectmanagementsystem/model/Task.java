@@ -33,11 +33,11 @@ public class Task {
 	private String name;
 
 	@Column
-	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
+	@DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
 	private LocalDateTime beginAt;
 
 	@Column
-	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
+	@DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
 	private LocalDateTime finishAt;
 
 	@Column(updatable = false)

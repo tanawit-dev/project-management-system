@@ -42,6 +42,15 @@ public class TaskServiceImpl implements ITaskService {
 	}
 
 	@Override
+	public Task logWork(Long id, Task task) {
+		Task retrivedTask = taskRepository.findById(id).orElseThrow(NotFoundExcetion::new);
+		retrivedTask.setBeginAt(task.getBeginAt());
+		retrivedTask.setFinishAt(task.getFinishAt());
+		retrivedTask.setDetail(task.getDetail());
+		return taskRepository.save(retrivedTask);
+	}
+
+	@Override
 	public void delete(Long id) {
 		taskRepository.deleteById(id);
 	}

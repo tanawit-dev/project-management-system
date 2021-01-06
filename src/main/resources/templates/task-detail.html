@@ -18,18 +18,48 @@
 	<body>
 		<div th:replace="fragments/header :: header"></div>
 		<div class="container">
+			<a th:href="@{/projects/{id}(id=${task.projectId})}" class="btn btn-secondary mb-3">Back</a>
 			<h2 th:text="'Task - ' + ${task.name}"></h2>
-			<a th:href="@{/projects/{id}(id=${project.id})}" th:text="'Back to ' + ${project.name} " class="btn btn-secondary"></a>
-			<form th:action="@{/projects/{id}/tasks/{taskId}(id=${task.projectId}, taskId=${task.id})}" th:object="${task}" method="post" class="mt-2">
+			<h5 th:text="'MD - ' + ${task.md}"></h5>
+			<h5 th:text="'Is complete - ' + ${task.isCompleted}"></h5>
+			<form
+				th:action="@{/projects/{id}/tasks/{taskId}/log-work(id=${task.projectId}, taskId=${task.id})}"
+				th:object="${task}"
+				method="post"
+				class="mt-2"
+				onsubmit="validateForm();"
+			>
 				<div class="mb-3">
-					<label for="beginDate">Begin date:</label>
-					<input id="beginDate" type="datetime-local" class="form-control" placeholder="Begin date" />
+					<label for="beginDate" class="form-label">Begin date:</label>
+					<input th:field="*{beginAt}" id="beginDate" type="datetime-local" class="form-control" />
+					<div th:if="${#fields.hasErrors('beginAt')}" th:errors="*{beginAt}" class="form-text" />
 				</div>
 				<div class="mb-3">
-					<label for="finish">Finish date:</label>
-					<input id="finish" type="datetime-local" class="form-control" placeholder="Finish date" />
+					<label for="finishDate" class="form-label">Finish date:</label>
+					<input th:field="*{finishAt}" id="finishDate" type="datetime-local" class="form-control" />
+					<div th:if="${#fields.hasErrors('finishAt')}" th:errors="*{finishAt}" class="form-text" />
 				</div>
+				<div class="mb-3">
+					<label for="detail" class="form-label">Detail</label>
+					<textarea th:field="*{detail}" class="form-control" rows="3"></textarea>
+					<div th:if="${#fields.hasErrors('detail')}" th:errors="*{detail}" class="form-text" />
+				</div>
+				<input type="hidden" th:field="*{name}" th:value="${task.name}" id="name" />
+				<input type="submit" value="Log work" class="btn btn-primary" />
 			</form>
 		</div>
+		<script>
+			function validateForm() {
+				const beginAt = document.getElementById("beginDate").value;
+				const finishAt = document.getElementById("finishDate").value;
+
+				if (beginAt && finishAt) {
+					if (new Date(beginAt).getTime() >= new Date(finishAt).getTime()) {
+						alert("Begin date จะต้องเกิดขึ้นหลัง Finish date เท่านั้น");
+						event.preventDefault();
+					}
+				}
+			}
+		</script>
 	</body>
 </html>
