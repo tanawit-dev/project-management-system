@@ -23,6 +23,9 @@ public class ProjectDto {
 
 	public long getProgress() {
 		long count = tasks.stream().filter(t -> t.isCompleted()).count();
+		if (count == 0) {
+			return 0;
+		}
 		return (count * 100) / tasks.size();
 	}
 

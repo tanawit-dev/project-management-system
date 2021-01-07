@@ -105,7 +105,12 @@ public class ProjectServiceImplTest {
 		Project p = new Project();
 		p.setName("project name");
 
-		// project
+		Project createdProject = projectService.create(p);
+		int count = projectService.findAll().size();
+		projectService.delete(createdProject.getId());
+
+		Assertions.assertEquals(projectService.findAll().size(), count - 1);
+		Assertions.assertTrue(!projectService.findById(createdProject.getId()).isPresent());
 	}
 
 }
