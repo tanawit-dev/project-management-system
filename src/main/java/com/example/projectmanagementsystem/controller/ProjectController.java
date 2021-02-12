@@ -183,7 +183,7 @@ public class ProjectController {
             return "task-detail";
         }
 
-        taskService.logWork(id, taskMapper.toEntity(taskDto));
+        taskService.logWork(taskDto.getId(), taskMapper.toEntity(taskDto));
         return "redirect:/projects/" + id + "/tasks/" + taskDto.getId();
     }
 
