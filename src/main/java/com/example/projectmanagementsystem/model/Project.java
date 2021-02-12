@@ -29,6 +29,10 @@ public class Project {
     @OneToMany(mappedBy = "project")
     private Set<EmployeeProject> employeeProjects;
 
+    public Project(String name) {
+        this.name = name;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

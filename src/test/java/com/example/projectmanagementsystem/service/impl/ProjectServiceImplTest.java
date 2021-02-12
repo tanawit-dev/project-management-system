@@ -3,14 +3,19 @@ package com.example.projectmanagementsystem.service.impl;
 import com.example.projectmanagementsystem.model.Project;
 import com.example.projectmanagementsystem.repository.ProjectRepository;
 import com.example.projectmanagementsystem.service.IProjectService;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -18,94 +23,101 @@ public class ProjectServiceImplTest {
 
     @Autowired
     IProjectService projectService;
+
     @Autowired
     ProjectRepository projectRepository;
-    private List<Project> projects;
 
     @BeforeEach
-    public void beforeEach() {
-        Project project1 = new Project();
-        project1.setName("project1");
-        Project project2 = new Project();
-        project2.setName("project2");
-        Project project3 = new Project();
-        project3.setName("project3");
-        projects = new ArrayList<>();
-        projects.add(project1);
-        projects.add(project2);
-        projects.add(project3);
-
-        projects.forEach(p -> projectService.create(p));
-    }
-
-    @AfterEach
-    public void afterEach() {
+    public void cleanup() {
         projectRepository.deleteAll();
     }
 
     @Test
     @DisplayName("Should list all project and then success")
     public void shouldFindAll_thenSuccess() {
-        List<Project> retrivedProjects = projectService.findAll();
-        Assertions.assertEquals(3, retrivedProjects.size());
+        persistToDatabase(
+                new Project("project 1"),
+                new Project("project 2"),
+                new Project("project 3")
+        );
+
+        List<Project> projects = projectService.findAll();
+
+        assertThat(projects.size()).isEqualTo(3);
+        assertThat(projects)
+                .hasSize(3)
+                .extracting("name")
+                .containsExactly("project 1", "project 2", "project 3");
     }
 
     @Test
     @DisplayName("Should find by project id and then success")
     public void shouldFindByProjectId_thenSuccess() {
-        String projectName = "p1";
-        Project newProject = new Project();
-        newProject.setName(projectName);
+        String projectName = "project 1";
+        Project expectedProject = new Project();
+        expectedProject.setName(projectName);
 
-        newProject = projectService.create(newProject);
-        Optional<Project> retrivedProjectOpt = projectService.findById(newProject.getId());
+        Optional<Project> actuallyProject = projectService.findById(projectService.create(expectedProject).getId());
 
-        Assertions.assertTrue(retrivedProjectOpt.isPresent());
-        Project retrivedProject = retrivedProjectOpt.get();
-        Assertions.assertEquals(retrivedProject.getName(), projectName);
+        assertThat(actuallyProject.isPresent()).isTrue();
+        assertThat(actuallyProject.get().getId()).isNotNull();
+        assertThat(actuallyProject.get().getName()).isEqualTo(expectedProject.getName());
+    }
+
+    @Test
+    @DisplayName("Should not found any project when given non existing id")
+    public void shouldNotFound_whenGivenNotExistingId() {
+        Optional<Project> nonExistingProject = projectService.findById(new Random().nextLong());
+
+        assertThat(nonExistingProject.isPresent()).isFalse();
     }
 
     @Test
     @DisplayName("Should create project and then success")
     public void shouldCreateProject_thenSuccess() {
-        Project p1 = new Project();
-        p1.setName("p1");
+        String projectName = "project 1";
+        Project expectedProject = new Project();
+        expectedProject.setName(projectName);
 
-        Project createdProject = projectService.create(p1);
+        Project actuallyProject = projectService.create(expectedProject);
 
-        Assertions.assertNotNull(createdProject);
-        Assertions.assertNotNull(createdProject.getId());
-        Assertions.assertEquals("p1", createdProject.getName());
+        assertThat(actuallyProject).isNotNull();
+        assertThat(actuallyProject.getId()).isNotZero();
+        assertThat(actuallyProject.getName()).isEqualTo(expectedProject.getName());
     }
 
     @Test
     @DisplayName("Should update project ane then success")
     public void shouldUpdateProject_thenSuccess() {
-        Project p = new Project();
-        p.setName("p1");
-        p = projectService.create(p);
-        p.setName("p1 edit");
+        String projectName = "project 1";
+        Project expectedProject = new Project();
+        expectedProject.setName(projectName);
 
-        projectService.update(p.getId(), p);
-        Optional<Project> retrivedProjectOpt = projectService.findById(p.getId());
+        expectedProject = projectService.create(expectedProject);
+        expectedProject.setName(projectName + " edit");
+        projectService.update(expectedProject.getId(), expectedProject);
+        Optional<Project> actuallyProject = projectService.findById(expectedProject.getId());
 
-        Assertions.assertTrue(retrivedProjectOpt.isPresent());
-        Project retrivedProject = retrivedProjectOpt.get();
-        Assertions.assertEquals("p1 edit", retrivedProject.getName());
+        assertThat(actuallyProject.isPresent()).isTrue();
+        assertThat(actuallyProject.get().getId()).isEqualTo(expectedProject.getId());
+        assertThat(actuallyProject.get().getName()).isEqualTo(expectedProject.getName());
     }
 
     @Test
     @DisplayName("Should delete project success")
     public void shouldDeleteProject_thenSuccess() {
-        Project p = new Project();
-        p.setName("project name");
+        Project expectedProject = new Project("project 1");
 
-        Project createdProject = projectService.create(p);
-        int count = projectService.findAll().size();
-        projectService.delete(createdProject.getId());
+        expectedProject = projectService.create(expectedProject);
+        projectService.delete(expectedProject.getId());
+        Optional<Project> actuallyProject = projectService.findById(expectedProject.getId());
 
-        Assertions.assertEquals(projectService.findAll().size(), count - 1);
-        Assertions.assertFalse(projectService.findById(createdProject.getId()).isPresent());
+        assertThat(projectRepository.count()).isEqualTo(0);
+        assertThat(actuallyProject.isPresent()).isFalse();
+    }
+
+    private void persistToDatabase(Project... projects) {
+        projectRepository.saveAll(Arrays.asList(projects));
     }
 
 }
