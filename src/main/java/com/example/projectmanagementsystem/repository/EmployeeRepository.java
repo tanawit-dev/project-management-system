@@ -1,9 +1,8 @@
 package com.example.projectmanagementsystem.repository;
 
 import com.example.projectmanagementsystem.model.Employee;
-
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface EmployeeRepository extends JpaRepository<Employee, Long> {
-	Employee findByUsername(String username);
+    Employee findByUsername(String username);
 }

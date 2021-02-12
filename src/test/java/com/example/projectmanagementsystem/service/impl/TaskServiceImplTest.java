@@ -1,17 +1,8 @@
 package com.example.projectmanagementsystem.service.impl;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
-
 import com.example.projectmanagementsystem.model.Task;
 import com.example.projectmanagementsystem.repository.TaskRepository;
 import com.example.projectmanagementsystem.service.ITaskService;
-
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -19,6 +10,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -75,12 +73,12 @@ public class TaskServiceImplTest {
 
         assertEquals(name, task.getName());
         assertEquals(detail, task.getDetail());
-        assertEquals(beginAt, task.getBeginAt());
-        assertEquals(finishAt, task.getFinishAt());
+        assertThat(task.getBeginAt()).isEqualToIgnoringSeconds(beginAt);
+        assertThat(task.getFinishAt()).isEqualToIgnoringSeconds(finishAt);
     }
 
     @Test
-    @DisplayName("Should create task then succes")
+    @DisplayName("Should create task then success")
     public void shouldCreateTask_thenSuccess() {
         int count = taskService.findAll().size();
         Task task = new Task();

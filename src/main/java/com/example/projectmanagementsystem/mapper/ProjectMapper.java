@@ -2,7 +2,6 @@ package com.example.projectmanagementsystem.mapper;
 
 import com.example.projectmanagementsystem.dto.ProjectDto;
 import com.example.projectmanagementsystem.model.Project;
-
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 

@@ -1,22 +1,15 @@
 package com.example.projectmanagementsystem.model;
 
-import java.time.LocalDateTime;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-
-import org.hibernate.annotations.CreationTimestamp;
-import org.springframework.format.annotation.DateTimeFormat;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import javax.persistence.*;
+import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Entity
 @Getter
@@ -25,65 +18,53 @@ import lombok.Setter;
 @AllArgsConstructor
 public class Task {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-	@Column(nullable = false)
-	private String name;
+    @Column(nullable = false)
+    private String name;
 
-	@Column
-	@DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
-	private LocalDateTime beginAt;
+    @Column
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
+    private LocalDateTime beginAt;
 
-	@Column
-	@DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
-	private LocalDateTime finishAt;
+    @Column
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
+    private LocalDateTime finishAt;
 
-	@Column(updatable = false)
-	@CreationTimestamp
-	private LocalDateTime createAt;
+    @Column(updatable = false)
+    @CreationTimestamp
+    private LocalDateTime createAt;
 
-	@Column
-	private String detail;
+    @Column
+    private String detail;
 
-	@ManyToOne
-	@JoinColumn(name = "project_id")
-	private Project project;
+    @ManyToOne
+    @JoinColumn(name = "project_id")
+    private Project project;
 
-	@ManyToOne
-	@JoinColumn(name = "employee_id")
-	private Employee employee;
+    @ManyToOne
+    @JoinColumn(name = "employee_id")
+    private Employee employee;
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
-		return result;
-	}
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Task task = (Task) o;
+        return Objects.equals(id, task.id) && Objects.equals(name, task.name) && Objects.equals(beginAt, task.beginAt) && Objects.equals(finishAt, task.finishAt) && Objects.equals(createAt, task.createAt) && Objects.equals(detail, task.detail);
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Task other = (Task) obj;
-		if (id == null) {
-			if (other.id != null)
-				return false;
-		} else if (!id.equals(other.id))
-			return false;
-		return true;
-	}
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, beginAt, finishAt, createAt, detail);
+    }
 
-	@Override
-	public String toString() {
-		return "Task [beginAt=" + beginAt + ", createAt=" + createAt + ", detail=" + detail + ", finishAt=" + finishAt
-				+ ", id=" + id + ", name=" + name + "]";
-	}
+    @Override
+    public String toString() {
+        return "Task [beginAt=" + beginAt + ", createAt=" + createAt + ", detail=" + detail + ", finishAt=" + finishAt
+                + ", id=" + id + ", name=" + name + "]";
+    }
 
 }
