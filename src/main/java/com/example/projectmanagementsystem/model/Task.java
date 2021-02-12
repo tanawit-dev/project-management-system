@@ -48,6 +48,17 @@ public class Task {
     @JoinColumn(name = "employee_id")
     private Employee employee;
 
+    public Task(String name) {
+        this.name = name;
+    }
+
+    public Task(String name, LocalDateTime beginAt, LocalDateTime finishAt, String detail) {
+        this.name = name;
+        this.beginAt = beginAt;
+        this.finishAt = finishAt;
+        this.detail = detail;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
